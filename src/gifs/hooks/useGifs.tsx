@@ -6,16 +6,16 @@ export const useGifs = () => {
   const [gifs, setGifs] = useState<Gif[]>([]);
   const [previousTerms, setPreviousTerms] = useState<string[]>([]);
 
-  const gifsCache = useRef<Record<string,Gif[]>>({})
+  const gifsCache = useRef<Record<string, Gif[]>>({});
 
   const handleTermClicked = async (term: string) => {
-
-    if(gifsCache.current[term]){
-        setGifs(gifsCache.current[term]);
-        return;
+    if (gifsCache.current[term]) {
+      setGifs(gifsCache.current[term]);
+      return;
     }
     const gifs = await getGifsByQuery(term);
     setGifs(gifs);
+    gifsCache.current[term] = gifs;
   };
 
   const handleSearch = async (query: string = "") => {
@@ -33,11 +33,11 @@ export const useGifs = () => {
   };
 
   return {
-    //properties  
+    //properties
     gifs,
+    previousTerms,
     //methods
     handleSearch,
-    previousTerms,
     handleTermClicked,
   };
 };
