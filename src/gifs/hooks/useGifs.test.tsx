@@ -1,7 +1,7 @@
 import { act, renderHook } from "@testing-library/react";
 import { describe, expect, test, vi } from "vitest";
 import { useGifs } from "./useGifs";
-import * as gifActions from "../actions/get-gifs-by-query.action";
+import * as gifsActions from "../actions/get-gifs-by-query.action";
 
 describe("useGifs", () => {
   test("should return default values and methods", () => {
@@ -17,7 +17,7 @@ describe("useGifs", () => {
     const { result } = renderHook(() => useGifs());
 
     await act(async () => {
-      await result.current.handleSearch("goku");
+      await result.current.handleSearch('goku');
     });
 
     expect(result.current.gifs.length).toBe(10);
@@ -42,7 +42,7 @@ describe("useGifs", () => {
 
     expect(result.current.gifs.length).toBe(10);
 
-    vi.spyOn(gifActions, "getGifsByQuery").mockRejectedValue(
+    vi.spyOn(gifsActions, "getGifsByQuery").mockRejectedValue(
       new Error("this is my custom error")
     );
 
@@ -51,5 +51,15 @@ describe("useGifs", () => {
     });
 
     expect(result.current.gifs.length).toBe(10);
+  });
+
+  test("should teturn no more than 8 previous terms", async () => {
+    const { result } = renderHook(() => useGifs());
+
+    vi.spyOn(gifsActions, "getGifsByQuery").mockResolvedValue([]);
+
+    await act(async () => {
+      await result.current.handleSearch("goku1");
+    });
   });
 });
